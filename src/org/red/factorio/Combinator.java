@@ -1,6 +1,6 @@
-package factorio;
+package org.red.factorio;
 
-import music.Note;
+import org.red.music.Note;
 
 public class Combinator {
 	public final int tick;

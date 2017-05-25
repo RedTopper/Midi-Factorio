@@ -1,4 +1,4 @@
-package io;
+package org.red.io;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -13,8 +13,8 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
-import music.Note;
-import music.Tempo;
+import org.red.music.Note;
+import org.red.music.Tempo;
 
 public class Midi {
     public static final int NOTE_ON = 0x90;

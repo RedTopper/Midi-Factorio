@@ -1,4 +1,4 @@
-package music;
+package org.red.music;
 
 public class Tempo {
 	public final long tick, tempo;

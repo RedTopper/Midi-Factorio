@@ -1,4 +1,4 @@
-package music;
+package org.red.music;
 
 public class Note {
 	public final String name;

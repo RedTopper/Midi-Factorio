@@ -1,13 +1,13 @@
-package red;
+package org.red;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import factorio.Combinator;
-import io.Midi;
-import music.Note;
+import org.red.factorio.Combinator;
+import org.red.io.Midi;
+import org.red.music.Note;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
