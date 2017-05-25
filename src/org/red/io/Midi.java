@@ -48,18 +48,14 @@ public class Midi {
     
 	public static final int BASE_OFFSET = -40;
 
-    public static List<Note> parse(String file) throws Exception {
+    public static List<Note> parse(Scanner reader, File file) throws Exception {
     	List<Tempo> tempo = new ArrayList<>(); 
     	List<Note> notes = new ArrayList<>();
-        Scanner reader = new Scanner(System.in);
-        Sequence sequence = MidiSystem.getSequence(new File(file));
+        Sequence sequence = MidiSystem.getSequence(file);
     	long ticksPerQN = sequence.getResolution();
     	
     	//verify if tracks can fit!
-    	if(sequence.getTracks().length > TRACK_NAMES.length) {
-    		reader.close();
-    		throw new Exception("Too many tracks in song!");
-    	}
+    	if(sequence.getTracks().length > TRACK_NAMES.length) throw new Exception("Too many tracks in song!");
     	
     	//show sequencing resolution
         System.out.println("Sequence resolution: " + ticksPerQN);
@@ -221,4 +217,9 @@ public class Midi {
     	bytes[3] = message[5];
     	return ByteBuffer.wrap(bytes).getInt();
     }
+	
+	public static int getTracks(File file) throws Exception {
+		 Sequence sequence = MidiSystem.getSequence(file);
+		 return sequence.getTracks().length;
+	}
 }

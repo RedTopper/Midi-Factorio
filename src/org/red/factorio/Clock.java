@@ -2,6 +2,7 @@ package org.red.factorio;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.red.Generate;
 
 public class Clock {
 	
@@ -76,7 +77,7 @@ public class Clock {
 		return new JSONObject()
 		.put("entity_number", 1)
 		.put("name", "constant-combinator")
-		.put("position", Position.generatePosition(0,-2))
+		.put("position", Generate.position(0,-2))
 		.put("direction", 2)
 		.put("control_behavior", generateTimer())
 		.put("connections", generateConstantCombCon());
@@ -87,7 +88,7 @@ public class Clock {
 		return new JSONObject()
 		.put("entity_number", 2)
 		.put("name", "decider-combinator")
-		.put("position", Position.generatePosition(1.5,-2))
+		.put("position", Generate.position(1.5,-2))
 		.put("direction", 2)
 		.put("control_behavior", generateDeciderData(max))
 		.put("connections", generateDeciderCombCon());

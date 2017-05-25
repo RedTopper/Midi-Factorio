@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.red.Line;
+import org.red.Generate;
 import org.red.music.Note;
 
 public class Combinator {
@@ -177,7 +177,7 @@ public class Combinator {
 		return new JSONObject()
 		.put("entity_number", getConstantId())
 		.put("name", "constant-combinator")
-		.put("position", Position.generatePosition(x * 3,y))
+		.put("position", Generate.position(x * 3,y))
 		.put("direction", 2)
 		.put("control_behavior", generateNoteData())
 		.put("connections", generateConstantCombCon());
@@ -192,7 +192,7 @@ public class Combinator {
 		return new JSONObject()
 		.put("entity_number", getDeciderId())
 		.put("name", "decider-combinator")
-		.put("position", Position.generatePosition((double)x * 3.0 + 1.5, y))
+		.put("position", Generate.position((double)x * 3.0 + 1.5, y))
 		.put("direction", 2)
 		.put("control_behavior", generateDeciderData())
 		.put("connections", generateDeciderCombCon(pos));
