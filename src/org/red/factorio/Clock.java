@@ -54,13 +54,13 @@ public class Clock {
 			.put("red", new JSONArray()
 					
 				//connection to self
-				.put(Wire.from(DCID)
-						
-				//connect to Constant Combinator
-				).put(Wire.from(CCID)
+				.put(Wire.to(DCID, 2)
 						
 				//connect to next Decider Combinator
-				).put(Wire.to(DCID + 2, 1))
+				).put(Wire.to(DCID + 2, 1)
+				
+				//connect to Constant Combinator
+				).put(Wire.fromCC(CCID))
 			)
 		)
 		.put("2", new JSONObject()
@@ -76,7 +76,7 @@ public class Clock {
 		return new JSONObject()
 		.put("entity_number", 1)
 		.put("name", "constant-combinator")
-		.put("position", Logic.generatePosition(0,0))
+		.put("position", Position.generatePosition(0,-2))
 		.put("direction", 2)
 		.put("control_behavior", generateTimer())
 		.put("connections", generateConstantCombCon());
@@ -87,7 +87,7 @@ public class Clock {
 		return new JSONObject()
 		.put("entity_number", 2)
 		.put("name", "decider-combinator")
-		.put("position", Logic.generatePosition(1.5,0))
+		.put("position", Position.generatePosition(1.5,-2))
 		.put("direction", 2)
 		.put("control_behavior", generateDeciderData(max))
 		.put("connections", generateDeciderCombCon());

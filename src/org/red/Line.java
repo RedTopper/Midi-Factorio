@@ -1,6 +1,6 @@
 package org.red;
 
-public enum Position {
+public enum Line {
 	FIRST,
 	MIDDLE,
 	LAST

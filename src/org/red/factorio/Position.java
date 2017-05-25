@@ -2,7 +2,7 @@ package org.red.factorio;
 
 import org.json.JSONObject;
 
-public class Logic {
+public class Position {
 	
 	/**
 	 * Generates JSON that contains an X and Y position

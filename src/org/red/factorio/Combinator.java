@@ -1,13 +1,19 @@
 package org.red.factorio;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.red.Position;
+import org.red.Line;
 import org.red.music.Note;
 
 public class Combinator {
+	
+	public static final int COMBINATOR_SIZE = 15;
 	public final int tick;
-	private final int[] notes = new int[15];
+	private final Map<String,Integer> notes = new HashMap<>();
 	private int id = 0;
 	
 	public Combinator(int tick) {
@@ -18,18 +24,26 @@ public class Combinator {
 		StringBuilder str = new StringBuilder();
 		str.append("ID " + id + " At tick " + tick + " ");
 		String delem = "(";
-		for(int i : notes) {
-			str.append(delem + i);
+		for(Entry<String, Integer> i : notes.entrySet()) {
+			str.append(delem + i.getKey() + " " + i.getValue());
 			delem = ":";
 		}
 		str.append(")");
 		return str.toString();
 	}
 	
-	public boolean setNote(Note note) throws Exception {
-		if(note.track > 14) throw new Exception("Too many tracks in song!");
-		if(notes[note.track] > 0 && notes[note.track] != note.key) return false;
-		notes[note.track] = note.key;
+	public boolean setNote(Note note) {
+		
+		//check if we can insert another note
+		if(notes.size() >= COMBINATOR_SIZE) return false;
+		
+		//check if the track we are inserting already exists
+		Integer currentNote = notes.put(note.trackName, note.key);
+		if(currentNote != null) {
+			
+			//return false if different, true if same
+			return currentNote.intValue() != note.key;
+		}
 		return true;
 	}
 	
@@ -37,11 +51,11 @@ public class Combinator {
 		this.id = id;
 	}
 	
-	private int getDeciderId() {
+	public int getDeciderId() {
 		return this.id * 2 + 2;
 	}
 	
-	private int getConstantId() {
+	public int getConstantId() {
 		return this.id * 2 + 1;
 	}
 
@@ -51,13 +65,13 @@ public class Combinator {
 	 * @param note note value
 	 * @return JSONObject
 	 */
-	private JSONObject generateNote(int pos, int note) {
+	private JSONObject generateNote(String track, int note, int index) {
 		return new JSONObject()
 		.put("signal", new JSONObject()
 			.put("type", "virtual")
-			.put("name", "signal-" + (char)(pos + 'A'))
+			.put("name", "signal-" + track)
 		).put("count", note)
-		.put("index", pos + 1);
+		.put("index", index);
 	}
 	
 	/**
@@ -65,11 +79,12 @@ public class Combinator {
 	 * @return JSONObject
 	 */
 	private JSONObject generateNoteData() {
-		JSONArray notes = new JSONArray();
-		for(int i = 0; i < this.notes.length; i++) {
-			if(this.notes[i] > 0) notes.put(generateNote(i, this.notes[i]));
+		JSONArray values = new JSONArray();
+		int index = 0;
+		for(Entry<String, Integer> entry: notes.entrySet()) {
+			values.put(generateNote(entry.getKey(), entry.getValue(), ++index));
 		}
-		return new JSONObject().put("filters", notes);
+		return new JSONObject().put("filters", values);
 	}
 	
 	/**
@@ -83,7 +98,9 @@ public class Combinator {
 			.put("first_signal", new JSONObject()
 				.put("type", "virtual")
 				.put("name", "signal-T")
-			).put("constant", this.tick)
+				
+			//have to add one so the first note plays!
+			).put("constant", this.tick + 1) 
 			.put("comparator", "=")
 			.put("output_signal", new JSONObject()
 				.put("type", "virtual")
@@ -115,7 +132,7 @@ public class Combinator {
 	 * @param id the current id of the decider combinator.
 	 * @return JSONObject
 	 */
-	private JSONObject generateDeciderCombCon(Position pos) {
+	private JSONObject generateDeciderCombCon(Line pos) {
 		int subID = getDeciderId();
 		
 		//create wire array
@@ -124,22 +141,22 @@ public class Combinator {
 		JSONArray green2 = new JSONArray();
 		
 		//always make a connection to the previous Decider Combinator
-		red1.put(Wire.from(subID - 2));
+		red1.put(Wire.to(subID - 2, 1));
 		
 		//if we are last, we don't want to connect to the next Decider Combinator
-		if(pos != Position.LAST)
+		if(pos != Line.LAST)
 			red1.put(Wire.to(subID + 2, 1));
 		
 		//always connect to previous Constant Combinator
-		green1.put(Wire.from(subID - 1));
+		green1.put(Wire.fromCC(subID - 1));
 		
 		//if we are first, we don't want to connect to previous Decider Combinator 
 		//(that's the clock!)
-		if(pos != Position.FIRST)
-			green2.put(Wire.from(subID - 2));
+		if(pos != Line.FIRST)
+			green2.put(Wire.to(subID - 2, 2));
 		
 		//if we are last, we don't want to connect to the next Decider Combinator
-		if(pos != Position.LAST)
+		if(pos != Line.LAST)
 			green2.put(Wire.to(subID + 2, 2));
 		
 		return new JSONObject()
@@ -156,11 +173,11 @@ public class Combinator {
 	 * @param count Id of the current object.
 	 * @return JSONObject
 	 */
-	public JSONObject generateConstantComb(int y) {
+	public JSONObject generateConstantComb(int x, int y) {
 		return new JSONObject()
 		.put("entity_number", getConstantId())
 		.put("name", "constant-combinator")
-		.put("position", Logic.generatePosition(0,y))
+		.put("position", Position.generatePosition(x * 3,y))
 		.put("direction", 2)
 		.put("control_behavior", generateNoteData())
 		.put("connections", generateConstantCombCon());
@@ -171,11 +188,11 @@ public class Combinator {
 	 * @param id Id of the current object.
 	 * @return JSONObject
 	 */
-	public JSONObject generateDeciderComb(int y, Position pos) {
+	public JSONObject generateDeciderComb(int x, int y, Line pos) {
 		return new JSONObject()
 		.put("entity_number", getDeciderId())
 		.put("name", "decider-combinator")
-		.put("position", Logic.generatePosition(1.5,y))
+		.put("position", Position.generatePosition((double)x * 3.0 + 1.5, y))
 		.put("direction", 2)
 		.put("control_behavior", generateDeciderData())
 		.put("connections", generateDeciderCombCon(pos));
