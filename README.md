@@ -12,3 +12,11 @@ Converts a MIDI file into a factorio blueprint. The program is controled from th
 ### Automation tips:
 
 You can pipe the settings you use into this program. Instead of typing into standard input, have the computer do it for you.
+
+### Broken MIDIs:
+
+Some MIDIs just can't be parsed. If you ever get an infinite loop of "Tempo set to xxxx", it's likely that MIDI does not work. You could try a few things to resolve this:
+
+ * Import it into a MIDI editing program and re-export it
+ * Find another, similar MIDI online
+ * Edit the file with MuseScore or similar notation software, and re-export that
