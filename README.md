@@ -17,7 +17,7 @@ etc...
 
 This means you can configure the sound and volume of each instrument rather than the sound and volume of arbitrary notes. However, it can mean the generated blueprints are bigger.
 
-In order to achieve the best compression, try splitting cords amung multiple instruments. In MuseScore, this would mean having a piano play a chord on 3 staves rathern than one. You can use ```edit > tools > explode``` to achieve this quickly.
+In order to achieve the best compression, try splitting cords amung multiple instruments. In MuseScore, this would mean having a piano play a chord on 3 staves rather than one. You can use ```edit > tools > explode``` to achieve this quickly.
 
 ### How to use this tool:
 
