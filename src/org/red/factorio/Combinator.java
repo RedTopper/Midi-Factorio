@@ -38,12 +38,14 @@ public class Combinator {
 		if(notes.size() >= COMBINATOR_SIZE) return false;
 		
 		//check if the track we are inserting already exists
-		Integer currentNote = notes.put(note.trackName, note.key);
+		Integer currentNote = notes.get(note.trackName);
 		if(currentNote != null) {
 			
 			//return false if different, true if same
-			return currentNote.intValue() != note.key;
+			return currentNote.intValue() == note.key;
 		}
+		
+		notes.put(note.trackName, note.key);
 		return true;
 	}
 	

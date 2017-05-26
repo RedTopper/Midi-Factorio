@@ -8,6 +8,8 @@ import org.red.music.Sound;
 public class Speaker {
 	
 	public static final int FIRST_NOTE_DECIDER = 4;
+	public static final double PERCUSSION_VOL = 0.6;
+	public static final double PIANO_VOL = 1;
 
 	public static JSONObject generateSpeaker(int index, int id, Sound sound) {
 		return new JSONObject()
@@ -17,7 +19,12 @@ public class Speaker {
 		.put("control_behavior", new JSONObject()
 			.put("circuit_condition", generateCircutCondition(index, sound))
 			.put("circuit_parameters", generateSpeakerData(sound)))
-		.put("connections", generateSpeakerConnections(index, id));
+		.put("connections", generateSpeakerConnections(index, id))
+		.put("parameters", new JSONObject()
+			.put("playback_globally", true)
+			.put("playback_volume", (sound.percussion ? PERCUSSION_VOL : PIANO_VOL))
+			.put("allow_polyphony", true)
+		);
 	}
 
 	public static JSONObject generateLamp(int index, int id, Sound sound) {
