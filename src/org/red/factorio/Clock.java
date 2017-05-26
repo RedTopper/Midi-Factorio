@@ -20,7 +20,7 @@ public class Clock {
 				).put("count", 1)
 				.put("index", 1)
 			)
-		);
+		).put("is_on", false);
 	}
 	
 	private static JSONObject generateDeciderData(int max) {
@@ -61,7 +61,7 @@ public class Clock {
 				).put(Wire.to(DCID + 2, 1)
 				
 				//connect to Constant Combinator
-				).put(Wire.fromCC(CCID))
+				).put(Wire.toCC(CCID))
 			)
 		)
 		.put("2", new JSONObject()

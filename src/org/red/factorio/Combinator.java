@@ -148,7 +148,7 @@ public class Combinator {
 			red1.put(Wire.to(subID + 2, 1));
 		
 		//always connect to previous Constant Combinator
-		green1.put(Wire.fromCC(subID - 1));
+		green1.put(Wire.toCC(subID - 1));
 		
 		//if we are first, we don't want to connect to previous Decider Combinator 
 		//(that's the clock!)

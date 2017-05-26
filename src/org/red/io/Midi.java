@@ -15,6 +15,7 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import org.red.music.Note;
+import org.red.music.Sound;
 import org.red.music.Tempo;
 
 public class Midi {
@@ -48,9 +49,10 @@ public class Midi {
     
 	public static final int BASE_OFFSET = -40;
 
-    public static List<Note> parse(Scanner reader, File file) throws Exception {
-    	List<Tempo> tempo = new ArrayList<>(); 
+    public static Data parse(Scanner reader, File file) throws Exception {
+    	List<Tempo> tempo = new ArrayList<>();
     	List<Note> notes = new ArrayList<>();
+    	List<Sound> tracks = new ArrayList<>();
         Sequence sequence = MidiSystem.getSequence(file);
     	long ticksPerQN = sequence.getResolution();
     	
@@ -96,6 +98,9 @@ public class Midi {
             	}
             	offset += shift;
             }
+            
+            //add track
+            tracks.add(new Sound(TRACK_NAMES[trackNumber], percussion));
             
             //reset time
             long lastTick = 0;
@@ -190,7 +195,7 @@ public class Midi {
             System.out.println();
         }
         reader.close();
-        return notes;
+        return new Data(notes, tracks);
     }
     
     private static int getInt(Scanner reader, int min, int max) {
@@ -217,9 +222,4 @@ public class Midi {
     	bytes[3] = message[5];
     	return ByteBuffer.wrap(bytes).getInt();
     }
-	
-	public static int getTracks(File file) throws Exception {
-		 Sequence sequence = MidiSystem.getSequence(file);
-		 return sequence.getTracks().length;
-	}
 }

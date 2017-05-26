@@ -12,8 +12,10 @@ import java.util.zip.DeflaterOutputStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.red.factorio.Combinator;
+import org.red.io.Data;
 import org.red.io.Midi;
 import org.red.music.Note;
+import org.red.music.Sound;
 
 public class Main {
 	
@@ -28,7 +30,10 @@ public class Main {
         System.err.println("What midi file do you want to parse?");
         System.err.print("[file] > ");
         File file = new File(reader.nextLine());
-		List<Note> notes = Midi.parse(reader, file);
+		Data data = Midi.parse(reader, file);
+		
+		List<Note> notes = data.notes;
+		List<Sound> tracks = data.tracks;
 		
 		//create combinators
 		List<Combinator> combinators = Generate.combinators(notes);
@@ -51,17 +56,19 @@ public class Main {
 		int maxWidth = Position.combinators(rom, maxHeight, combinators);
 		
 		//position substation within ROM
-		int id = Position.substations(rom, maxHeight, maxWidth, combinators.get(combinators.size() - 1).getDeciderId());
+		int id = Position.substations(rom, maxWidth, maxHeight, combinators.get(combinators.size() - 1).getDeciderId());
 		
 		//place speakers
-		Position.speakers(rom, id, Midi.getTracks(file));
+		Position.speakers(rom, id, tracks);
 		
 		//build the blueprint
 		JSONObject blueprint = Generate.blueprint(rom, file);
 		
 		//print raw blueprint
+		System.out.println();
 		System.out.println("Blueprint: ");
-		System.out.println(blueprint);
+		System.out.println("(hidden)");
+		//System.out.println(blueprint);
 		
 		//compress blueprint
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -76,7 +83,7 @@ public class Main {
         //print some neat statistics
 		System.out.println();
 		System.out.println("Stats: ");
-		System.out.printf("Your song has %d notes and %d combinators!\n", notes.size(), combinators.size());
+		System.out.printf("Your song has %d notes, %d combinators, and %d tracks!\n", notes.size(), combinators.size(), tracks.size());
 		
 		reader.close();
 	}

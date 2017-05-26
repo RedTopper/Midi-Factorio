@@ -5,7 +5,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.red.factorio.Combinator;
 import org.red.factorio.Line;
+import org.red.factorio.Speaker;
 import org.red.factorio.Substation;
+import org.red.music.Sound;
 
 public class Position {
 	
@@ -65,17 +67,19 @@ public class Position {
 			
 			System.out.println(combinator);
 		}
-		return y;
+		return x;
 	}
 
-	public static void speakers(JSONArray rom, int id, int tracks) {
-		
+	public static void speakers(JSONArray rom, int id, List<Sound> tracks) {
+		for(int i = 0; i < tracks.size(); i++) {
+			rom.put(Speaker.generateSpeaker(i, ++id, tracks.get(i)));
+			rom.put(Speaker.generateLamp(i, ++id, tracks.get(i)));
+		}
 	}
 
-
-	public static int substations(JSONArray rom, int maxHeight, int maxWidth, int id) {
-		for(int x = 0; x < (maxWidth / SUBSTATION_X) + 1; x++) {
-			for(int y = 0; y < (maxHeight / SUBSTATION_Y) + 1; y++) {
+	public static int substations(JSONArray rom, int maxWidth, int maxHeight, int id) {
+		for(int x = 0; x <= (int)((double)maxWidth / (double)SUBSTATION_X + 0.5); x++) {
+			for(int y = 0; y <= (int)((double)maxHeight / (double)SUBSTATION_Y + 0.5); y++) {
 				rom.put(Substation.generate(++id, 
 					(x * SUBSTATION_X) + SUBSTATION_OFFSET, (y * SUBSTATION_Y) + SUBSTATION_OFFSET));
 			}

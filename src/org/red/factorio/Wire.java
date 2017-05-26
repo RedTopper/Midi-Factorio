@@ -9,7 +9,7 @@ public class Wire {
 		.put("circuit_id", circuit);
 	}
 	
-	public static JSONObject fromCC(int entity) {
+	public static JSONObject toCC(int entity) {
 		return new JSONObject()
 		.put("entity_id", entity);
 	}
