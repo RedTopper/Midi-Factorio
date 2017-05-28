@@ -26,10 +26,17 @@ public class Main {
 		//Open scanner
         Scanner reader = new Scanner(System.in);
 		
-		//parse the song
+		//file?
         System.err.println("What midi file do you want to parse?");
         System.err.print("[file] > ");
         File file = new File(reader.nextLine());
+        
+        //speakers?
+        System.err.println("Also include speakers?");
+        System.err.println("[y/n] (Y)");
+        boolean speakers = !reader.nextLine().trim().equals("n");
+        
+        //parse the song
 		Data data = Midi.parse(reader, file);
 		
 		List<Note> notes = data.notes;
@@ -59,7 +66,8 @@ public class Main {
 		int id = Position.substations(rom, maxWidth, maxHeight, combinators.get(combinators.size() - 1).getDeciderId());
 		
 		//place speakers
-		Position.speakers(rom, id, tracks);
+		
+		if(speakers) Position.speakers(rom, id, tracks);
 		
 		//build the blueprint
 		JSONObject blueprint = Generate.blueprint(rom, file);
