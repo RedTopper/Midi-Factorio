@@ -66,7 +66,6 @@ public class Main {
 		int id = Position.substations(rom, maxWidth, maxHeight, combinators.get(combinators.size() - 1).getDeciderId());
 		
 		//place speakers
-		
 		if(speakers) Position.speakers(rom, id, tracks);
 		
 		//build the blueprint
